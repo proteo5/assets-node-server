@@ -7,6 +7,7 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const mustache = require('mustache');
+var minify = require('html-minifier').minify;
 // you can pass the parameter in the command line. e.g. node static_server.js 3000
 const port = process.argv[2] || 9000;
 http.createServer(function(req, res) {
@@ -72,6 +73,7 @@ var sendPublicFile = function(pathname, res) {
         const mimeType = {
             '.ico': 'image/x-icon',
             '.html': 'text/html',
+            '.htm': 'text/html',
             '.js': 'text/javascript',
             '.json': 'application/json',
             '.css': 'text/css',
@@ -86,10 +88,22 @@ var sendPublicFile = function(pathname, res) {
             '.ttf': 'aplication/font-sfnt'
         };
 
-        // read file from file system
-        var data = fs.readFileSync(pathname);
         // based on the URL path, extract the file extention. e.g. .js, .doc, ...
         const ext = path.parse(pathname).ext;
+        var data;
+        if (ext == '.html' || ext == '.htm') {
+            // read file from file system as a string
+            data = fs.readFileSync(pathname, "utf8");
+            // Minify HTML
+            data = minify(data, {
+                minifyJS: true,
+                minifyCSS: true
+            });
+        } else {
+            // read file from file system as a buffer
+            data = fs.readFileSync(pathname);
+        }
+
         // if the file is found, set Content-type and send data
         res.setHeader('Content-type', mimeType[ext] || 'text/plain');
         res.end(data);
@@ -117,6 +131,13 @@ var sendPage = function(pathname, res) {
             }
             data = mustache.to_html(layout, { body: body });
         }
+
+        // Minify HTML
+        data = minify(data, {
+            removeComments: false,
+            minifyJS: true,
+            minifyCSS: true
+        });
 
         // if the file is found, set Content-type and send data
         res.setHeader('Content-type', 'text/html');

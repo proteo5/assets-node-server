@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/proteo5/assets-node-server#readme",
   "dependencies": {
+    "html-minifier": "^3.5.2",
     "mustache": "^2.3.0"
   },
   "devDependencies": {
+    "html-minifier": "^3.5.2",
     "mustache": "^2.3.0"
   }
 }
