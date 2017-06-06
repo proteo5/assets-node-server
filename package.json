@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/proteo5/assets-node-server/issues"
   },
-  "homepage": "https://github.com/proteo5/assets-node-server#readme"
+  "homepage": "https://github.com/proteo5/assets-node-server#readme",
+  "dependencies": {
+    "mustache": "^2.3.0"
+  },
+  "devDependencies": {
+    "mustache": "^2.3.0"
+  }
 }
