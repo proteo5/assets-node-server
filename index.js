@@ -6,7 +6,6 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-const mustache = require('mustache');
 var minify = require('html-minifier').minify;
 // you can pass the parameter in the command line. e.g. node static_server.js 3000
 const port = process.argv[2] || 9000;
@@ -129,8 +128,12 @@ var sendPage = function(pathname, res) {
             for (var index = 1; index < dataLines.length; index++) {
                 body += dataLines[index] + "\n";
             }
-            data = mustache.to_html(layout, { body: body });
+            data = layout.replace('<!-- body -->', body);
+            dataLines = data.split(/\r?\n/);
         }
+
+        //check if html has components
+        data = insertComponents(dataLines);
 
         // Minify HTML
         data = minify(data, {
@@ -148,10 +151,31 @@ var sendPage = function(pathname, res) {
     }
 };
 
+var insertComponents = function(dataLines) {
+    try {
+        var body = "";
+        for (var index = 0; index < dataLines.length; index++) {
+            if (dataLines[index].indexOf("<!-- component:") !== -1) {
+                var pathname = dataLines[index].replace('<!-- component: ', '').replace(' -->', '').replace('\t', '').trim();
+                var fileInfo = verifyPath(`./components/${pathname}`);
+                if (fileInfo.exist) {
+                    body += fs.readFileSync(fileInfo.pathname, "utf8") + "\n";
+                };
+            } else {
+                body += dataLines[index] + "\n";
+            }
+        }
+
+        return body;
+    } catch (error) {
+        return body;
+    }
+};
+
 var getLayout = function(layoutInfo) {
     try {
-        var data = '{{{body}}}'
-        var pathname = layoutInfo.replace('<!-- layout: ', '').replace(' -->', '').replace(' ', '');
+        var data = '<!-- body -->'
+        var pathname = layoutInfo.replace('<!-- layout: ', '').replace(' -->', '').replace('\t', '').trim();
 
         var fileInfo = verifyPath(`./layouts/${pathname}`);
         if (fileInfo.exist) {
@@ -159,6 +183,6 @@ var getLayout = function(layoutInfo) {
         };
         return data;
     } catch (error) {
-        return "{{{body}}}";
+        return "<!-- body -->";
     }
 };
