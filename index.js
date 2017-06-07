@@ -120,6 +120,10 @@ var sendPage = function(pathname, res) {
         // split files by lines
         var dataLines = data.split(/\r?\n/);
 
+        //Remove Regions if it has
+        var dataRegions = removeRegions(dataLines);
+        dataLines = dataRegions.cleanLines;
+
         //check first line if it has a layout
         var hasLayout = dataLines[0].indexOf("<!-- layout:") !== -1;
         if (hasLayout) {
@@ -134,6 +138,10 @@ var sendPage = function(pathname, res) {
 
         //check if html has components
         data = insertComponents(dataLines);
+        dataLines = data.split(/\r?\n/);
+
+        //Add regions to layout
+        data = addRegions(dataLines, dataRegions.regions);
 
         // Minify HTML
         data = minify(data, {
@@ -169,6 +177,52 @@ var insertComponents = function(dataLines) {
         return body;
     } catch (error) {
         return body;
+    }
+};
+
+var removeRegions = function(dataLines) {
+    try {
+        var cleanLines = [];
+        var regions = {};
+        var readStatus = "readclean";
+        var regionName = "";
+        for (var index = 0; index < dataLines.length; index++) {
+            if (readStatus == "readclean") {
+                if (dataLines[index].indexOf("<!-- region:") !== -1) {
+                    regionName = dataLines[index].replace('<!-- region: ', '').replace(' -->', '').replace('\t', '').trim();
+                    readStatus = "readregion";
+                    regions[regionName] = "";
+                } else {
+                    cleanLines.push(dataLines[index]);
+                }
+            } else {
+                if (dataLines[index].indexOf("<!-- end-region -->") !== -1) {
+                    readStatus = "readclean";
+                } else {
+                    regions[regionName] += dataLines[index] + "\n";
+                }
+            }
+        }
+        return { cleanLines: cleanLines, regions: regions };
+    } catch (error) {
+        return { cleanLines: dataLines, regions: {} }
+    }
+};
+
+var addRegions = function(dataLines, regions) {
+    try {
+        var finalLines = "";
+        for (var index = 0; index < dataLines.length; index++) {
+            if (dataLines[index].indexOf("<!-- layout-region:") !== -1) {
+                var regionName = dataLines[index].replace('<!-- layout-region: ', '').replace(' -->', '').replace('\t', '').trim();
+                finalLines += regions[regionName] + "\n";
+            } else {
+                finalLines += dataLines[index] + "\n";
+            }
+        }
+        return finalLines;
+    } catch (error) {
+        return "";
     }
 };
 
