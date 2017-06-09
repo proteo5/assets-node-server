@@ -1,5 +1,6 @@
 # assets-node-server
-Server to provide fast assets to the browser
+Server to provide fast assets to the browser.
+
 In this days, it is not needed for MVC any more on the backend.
 It is normal to have your frontend project and your backend project separated.
 Your backend will provide all your data needs, so why bother having data functionality on the frontend project?
