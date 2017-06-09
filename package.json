@@ -1,25 +1,25 @@
 {
-  "name": "assets-node-server",
-  "version": "0.1.0",
-  "description": "Assets Node Server",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/proteo5/assets-node-server.git"
-  },
-  "author": "Alfredo Pinto Molina (aka Proteo5)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/proteo5/assets-node-server/issues"
-  },
-  "homepage": "https://github.com/proteo5/assets-node-server#readme",
-  "dependencies": {
-    "html-minifier": "^3.5.2"
-  },
-  "devDependencies": {
-    "html-minifier": "^3.5.2"
-  }
+    "name": "assets-node-server",
+    "version": "0.2.0",
+    "description": "Assets Node Server",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/proteo5/assets-node-server.git"
+    },
+    "author": "Alfredo Pinto Molina (aka Proteo5)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/proteo5/assets-node-server/issues"
+    },
+    "homepage": "https://github.com/proteo5/assets-node-server#readme",
+    "dependencies": {
+        "html-minifier": "^3.5.2"
+    },
+    "devDependencies": {
+        "html-minifier": "^3.5.2"
+    }
 }

@@ -25,7 +25,7 @@ http.createServer(function(req, res) {
 
     // parse URL
     const parsedUrl = url.parse(req.url);
-    // extract URL path
+    // extract URL path 
     let pathname = parsedUrl.pathname;
     let publicPathName = `./public${pathname}`;
     let pagesPathName = `./pages${pathname}`;
